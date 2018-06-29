@@ -7,50 +7,54 @@
 //
 
 import UIKit
+import CoreData
 
-class TodoListViewController: UITableViewController {
+
+class TodoListViewController: UITableViewController, UISearchBarDelegate {
     
     var itemArray = [Item]()
     var path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    
+    let longPress = UILongPressGestureRecognizer()
+    let searchBar = UISearchBar()
   
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchBar.delegate = self
+//        longPress.delegate = self
+        
+//        longPress.numberOfTouchesRequired = 1
+//        longPress.allowableMovement = 5.0
+//        longPress.minimumPressDuration = 1
+//        longPress.numberOfTapsRequired = 1
+//        tableView.addGestureRecognizer(longPress)
         print(path!)
         getData()
-        
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Item]{
-//            itemArray = items
-//        }
-//        var item1 = Item()
-//        item1.value = "sddf"
-//        var item2 = Item()
-//        item2.value = "sknjfn"
-//        var item3 = Item()
-//        item3.value = "iiiii"
-//        itemArray.append(item1)
-//        itemArray.append(item2)
-//        itemArray.append(item3)
-//
-        
-        
         tableView.separatorStyle = .none
-        
-    }
+        }
+    
+    
+    
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add new Item", message: "enter the item", preferredStyle: .alert)
         let action =  UIAlertAction(title: "Add", style: .default) { (action) in
             
-            let item = Item()
+            let item = Item(context: self.context)
             item.value = textField.text!
+            item.isChecked = false
             self.itemArray.append(item)
             self.saveData()
             self.tableView.reloadData()
+            
+            
           //  print("333")
         }
+        
         
         alert.addTextField { (alertTextField) in
             
@@ -65,35 +69,45 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    
+//    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
+    
+    
+    
+    
+    
 
     func saveData(){
-        let encoder = PropertyListEncoder()
+        
         do{
-            let data = try encoder.encode(itemArray)
-            try data.write(to: path!)
+            try context.save()
+        }
+        catch{
+            print("errors are \(error)")
+        }
+    }
+    
+    func getData(with request: NSFetchRequest<Item> = Item.fetchRequest()){
+       // let request :
+        do{
+            itemArray = try context.fetch(request)
         }
         catch{
             print(error)
         }
+        tableView.reloadData()
+
     }
     
-    func getData(){
-        if let data = try? Data(contentsOf: path!){
-            let decoder = PropertyListDecoder()
-            do{
-                itemArray = try decoder.decode([Item].self, from: data)
-            }
-            catch{
-                print(error)
-            }
-        }
-        
-    }
+    //MARK: table view appear
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         
@@ -105,13 +119,48 @@ class TodoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(itemArray[indexPath.row].value)
+        print(itemArray[indexPath.row].value!)
         
         itemArray[indexPath.row].isChecked = !itemArray[indexPath.row].isChecked
         saveData()
         tableView.reloadData()
 
         tableView.deselectRow(at: indexPath, animated: true)
+        
+    }
+    
+    
+    
+    //MARK: search bar
+
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//
+//        request.predicate = NSPredicate(format: "value CONTAINS[cd] %@", searchBar.text!)
+//        request.sortDescriptors = [NSSortDescriptor(key: "value", ascending: true)]
+//
+//        getData(with: request)
+//
+//
+//    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchBar.text?.count != 0{
+            let request: NSFetchRequest<Item> = Item.fetchRequest()
+
+            request.predicate = NSPredicate(format: "value CONTAINS[cd] %@", searchBar.text!)
+            request.sortDescriptors = [NSSortDescriptor(key: "value", ascending: true)]
+
+            getData(with: request)
+        }
+        else{
+            getData()
+            DispatchQueue.main.async {
+                 searchBar.resignFirstResponder()
+            }
+           
+        }
         
     }
 
