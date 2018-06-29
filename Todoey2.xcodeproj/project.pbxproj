@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1619DDA220E660C2004CA856 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1619DDA120E660C2004CA856 /* CategoryViewController.swift */; };
 		162FD3F920E0F57F00D800B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162FD3F820E0F57F00D800B7 /* AppDelegate.swift */; };
 		162FD3FE20E0F57F00D800B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 162FD3FC20E0F57F00D800B7 /* Main.storyboard */; };
 		162FD40020E0F57F00D800B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 162FD3FF20E0F57F00D800B7 /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1619DDA120E660C2004CA856 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		162FD3F520E0F57F00D800B7 /* Todoey2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		162FD3F820E0F57F00D800B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		162FD3FD20E0F57F00D800B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 				162FD43220E25BE000D800B7 /* DataModel.xcdatamodeld */,
 				162FD40A20E0FF5600D800B7 /* TodoListViewController.swift */,
 				162FD3FC20E0F57F00D800B7 /* Main.storyboard */,
+				1619DDA120E660C2004CA856 /* CategoryViewController.swift */,
 				162FD3FF20E0F57F00D800B7 /* Assets.xcassets */,
 				162FD40120E0F57F00D800B7 /* LaunchScreen.storyboard */,
 				162FD40420E0F57F00D800B7 /* Info.plist */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1619DDA220E660C2004CA856 /* CategoryViewController.swift in Sources */,
 				162FD40B20E0FF5600D800B7 /* TodoListViewController.swift in Sources */,
 				162FD43420E25BE000D800B7 /* DataModel.xcdatamodeld in Sources */,
 				162FD3F920E0F57F00D800B7 /* AppDelegate.swift in Sources */,

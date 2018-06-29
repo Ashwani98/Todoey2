@@ -13,17 +13,20 @@ import CoreData
 class TodoListViewController: UITableViewController, UISearchBarDelegate {
     
     var itemArray = [Item]()
-    var path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+   // var path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var selectedCategory: Category? { didSet{ getData()}}
     
     
-    let longPress = UILongPressGestureRecognizer()
+    
+ //   let longPress = UILongPressGestureRecognizer()
     let searchBar = UISearchBar()
   
 
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
+        
 //        longPress.delegate = self
         
 //        longPress.numberOfTouchesRequired = 1
@@ -31,7 +34,7 @@ class TodoListViewController: UITableViewController, UISearchBarDelegate {
 //        longPress.minimumPressDuration = 1
 //        longPress.numberOfTapsRequired = 1
 //        tableView.addGestureRecognizer(longPress)
-        print(path!)
+       // print(path!)
         getData()
         tableView.separatorStyle = .none
         }
@@ -47,6 +50,7 @@ class TodoListViewController: UITableViewController, UISearchBarDelegate {
             let item = Item(context: self.context)
             item.value = textField.text!
             item.isChecked = false
+            item.parentCategory = self.selectedCategory
             self.itemArray.append(item)
             self.saveData()
             self.tableView.reloadData()
@@ -89,8 +93,17 @@ class TodoListViewController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    func getData(with request: NSFetchRequest<Item> = Item.fetchRequest()){
-       // let request :
+    func getData(with request: NSFetchRequest<Item> = Item.fetchRequest(),_ predicate: NSPredicate? = nil){
+        let mustPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        if let check = predicate{
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [check, mustPredicate])
+            request.predicate = compoundPredicate
+        }
+        else{
+            request.predicate = mustPredicate
+        }
+        
+        
         do{
             itemArray = try context.fetch(request)
         }
@@ -119,7 +132,7 @@ class TodoListViewController: UITableViewController, UISearchBarDelegate {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(itemArray[indexPath.row].value!)
+       // print(itemArray[indexPath.row].value!)
         
         itemArray[indexPath.row].isChecked = !itemArray[indexPath.row].isChecked
         saveData()
@@ -149,10 +162,10 @@ class TodoListViewController: UITableViewController, UISearchBarDelegate {
         if searchBar.text?.count != 0{
             let request: NSFetchRequest<Item> = Item.fetchRequest()
 
-            request.predicate = NSPredicate(format: "value CONTAINS[cd] %@", searchBar.text!)
+            let predicate = NSPredicate(format: "value CONTAINS[cd] %@", searchBar.text!)
             request.sortDescriptors = [NSSortDescriptor(key: "value", ascending: true)]
 
-            getData(with: request)
+            getData(with: request, predicate)
         }
         else{
             getData()
