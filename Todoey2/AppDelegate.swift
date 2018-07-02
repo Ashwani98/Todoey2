@@ -18,6 +18,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
+//        let item = Item()
+//        item.value = "asdfasdf"
+//        item.isChecked = true
+//        do{
+//        let object = try Realm()
+//           try object.write {
+//                object.add(item)
+//            }
+//        }catch{
+//            print(error)
+//        }
+        
+        
+        
         return true
     }
 
